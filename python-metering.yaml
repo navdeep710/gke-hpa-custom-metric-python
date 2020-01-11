@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run: custom-metric-py-sd
+  name: custom-metric-py-sd
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: custom-metric-py-sd
+  template:
+    metadata:
+      labels:
+        run: custom-metric-py-sd
+    spec:
+      containers:
+      - env:
+        - name: POD_ID
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.uid
+
+        image: asia.gcr.io/dataorc/hpa_python:v5
+        name: sd-py-dummy-exporter
+        resources:
+          requests:
+            cpu: "100m"
